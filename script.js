@@ -1,48 +1,38 @@
-document.body.innerHTML += `
-  <input type="file" id="upload" accept="image/*" multiple>
-  <button id="process">Generate Listing</button>
-  <button id="download">Download CSV</button>
-  <pre id="output"></pre>
-`;
+document.addEventListener("DOMContentLoaded", () => {
+  const body = document.body;
 
-document.getElementById("process").onclick = async () => {
-  const output = document.getElementById("output");
-  output.textContent = "Processing... (simulated OCR + MFC lookup)";
+  const uploadLabel = document.createElement("label");
+  uploadLabel.textContent = "Upload figure photo:";
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*";
+  fileInput.style.display = "block";
 
-  // Simulated OCR/MFC data
-  const listing = {
-    manufacturer: "Taito",
-    universe: "Hatsune Miku",
-    character: "Hatsune Miku",
-    collection: "Winter Image Ver.",
-    height: "18 cm"
-  };
+  const output = document.createElement("pre");
+  output.textContent = "Waiting for image upload...";
+  output.style.marginTop = "20px";
 
-  const title = \`\${listing.universe} \${listing.character} \${listing.collection} Figure \${listing.manufacturer} (B/1)\`;
-  const description = \`Packaging Condition: B‑Sealed with minor damage (e.g., small dents or scratches) as shown in photos.
-Item Condition: 1‑New with no visible flaws.
-Manufacturer: \${listing.manufacturer}
-Universe: \${listing.universe}
-Character: \${listing.character}
-Collection: \${listing.collection}
-Height: \${listing.height}\`;
+  fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  output.textContent = \`eBay Title:\n\${title}\n\n\${description}\`;
-  window.generatedListing = { title, description, listing };
-};
+    output.textContent = "Processing image...";
 
-document.getElementById("download").onclick = () => {
-  if (!window.generatedListing) return alert("Please generate a listing first.");
-  const { title, listing } = window.generatedListing;
+    // Simulate listing generation — replace with real OCR later
+    const listing = `
+Packaging Condition: B – Sealed with minor wear (light corner compression, small surface scuffs visible in photos)
+Item Condition: 1 – Brand new, no visible flaws
+Manufacturer: Banpresto
+Universe: Jujutsu Kaisen
+Character: Satoru Gojo
+Collection: Break Time Collection
+Height: 10 cm`;
 
-  const csv = \`Title,Brand,Character,Franchise,Colour,Condition,Category,Price
-"\${title}","\${listing.manufacturer}","\${listing.character}","\${listing.universe}","Multi","New","Collectables > Animation Art & Merchandise > Animation Merchandise > Figures & Statues",""
-\`;
+    output.textContent = listing;
+  });
 
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "listing.csv";
-  a.click();
-};
+  body.appendChild(uploadLabel);
+  body.appendChild(fileInput);
+  body.appendChild(output);
+});
+
